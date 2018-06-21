@@ -1,8 +1,9 @@
 {
   "name": "@domojs/media-tmdbscrapper",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "main": "dist/server/index.js",
   "types": "dist/server/index.d.ts",
+  "private": false,
   "scripts": {
     "test": "echo \"Error: no test specified\"",
     "prepublishOnly": "tsc -p src"
@@ -12,7 +13,7 @@
   "dependencies": {
     "@akala/core": "^2.0.29",
     "@akala/server": "^2.0.21",
-    "@domojs/media": "^1.1.27"
+    "@domojs/media": "^1.1.33"
   },
   "description": "",
   "devDependencies": {

@@ -4,9 +4,9 @@ import { scrapper } from '@domojs/media';
 import { DbTvShow, tvdbScrapper, setLanguage } from './scrapper';
 export * from './scrapper';
 
-akala.injectWithNameAsync(['$isModule', '$config.@domojs/media-tvdbscrapper', '$agent.media'], function (isModule: akala.worker.IsModule, config: PromiseLike<any>, client: Client<Connection>)
+akala.injectWithNameAsync(['$isModule', '$config.@domojs/media-tmdbscrapper', '$agent.media'], function (isModule: akala.worker.IsModule, config: PromiseLike<any>, client: Client<Connection>)
 {
-    if (isModule('@domojs/media-tvdbscrapper'))
+    if (isModule('@domojs/media-tmdbscrapper'))
     {
         if (config)
             config.then(function (config)
