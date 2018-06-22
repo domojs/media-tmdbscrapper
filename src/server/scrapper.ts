@@ -301,7 +301,8 @@ export function tvdbScrapper(mediaType: MediaType, media: DbTvShow | DbTvMovie):
             if (tvshow.season)
             {
                 var episode = cacheItem.seasons.find(s => s.season_number == tvshow.season).episodes.find(e => e.episode_number == tvshow.episode);
-                tvshow.still = api.stillBaseUrl + episode.still_path;
+                if (episode)
+                    tvshow.still = api.stillBaseUrl + episode.still_path;
             }
 
             conf = confidence(media.name, [cacheItem.media.name, cacheItem.media.original_name].concat(akala.map(cacheItem.media.alternative_titles.results, at => at.title)))
@@ -407,7 +408,7 @@ export function tvdbScrapper(mediaType: MediaType, media: DbTvShow | DbTvMovie):
             {
                 if (!n)
                     return;
-                console.log(n);
+                // console.log(n);
                 var tokens = n.replace(/ \([0-9]{4}\)$/, '').replace(/[^A-Z0-9 ]/gi, '').toLowerCase();
                 var lev = new levenshtein(name, tokens).distance;
                 var c = 1 - lev / tokens.length;
@@ -464,7 +465,12 @@ export function tvdbScrapper(mediaType: MediaType, media: DbTvShow | DbTvMovie):
                     var c: number;
 
                     if (m.media_type == 'movie')
-                        c = confidence(name, [m.title, m.original_title]);
+                    {
+                        if (media.episode)
+                            c = confidence(name + ' ' + media.episode, [m.title, m.original_title]);
+                        else
+                            c = confidence(name, [m.title, m.original_title]);
+                    }
                     else
                         c = confidence(name, [m.name, m.original_name]);
                     if (c >= max)
