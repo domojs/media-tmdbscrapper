@@ -7,7 +7,13 @@ import * as self from '../server/scrapper';
 
 self.setLanguage('fr');
 
-var media: self.DbTvShow = { name: 'altered carbon', type: 'video', episode:1, season:1, path:'file://///ana.dragon-angel.fr/videos/tv series/altered carbon/altered carbon - s1 e1.mkv' } as any;
+// var media: self.DbTvShow = { name: 'altered carbon', type: 'video', episode:1, season:1, path:'file://///ana.dragon-angel.fr/videos/tv series/altered carbon/altered carbon - s1 e1.mkv' } as any;
+// self.tvdbScrapper('video', media).then(() =>
+// {
+//     console.log(media);
+// });
+
+var media: self.DbTvShow = { name: 'Insaisissables', type: 'video', episode:2, path:'' } as any;
 self.tvdbScrapper('video', media).then(() =>
 {
     console.log(media);

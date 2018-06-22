@@ -3,6 +3,7 @@ import * as path from 'path'
 import * as levenshtein from 'levenshtein';
 import { MediaType, TVShow, Movie } from '@domojs/media';
 import * as url from 'url';
+import { escapeRegExp } from '@akala/core/dist/reflect';
 const APIKEY = 'be3bc153ce74463263960789c93e29a9';
 const log = akala.log('domojs:media:tmdbscrapper');
 
@@ -420,7 +421,10 @@ export function tvdbScrapper(mediaType: MediaType, media: DbTvShow | DbTvMovie):
                 var match = akala.grep(tokenArray, function (token: string)
                 {
                     var indexOfToken = name.indexOf(token);
-                    return token.length > 0 && indexOfToken > -1 && (indexOfToken + token.length == name.length || /^[^A-Z]/i.test(name.substring(indexOfToken + token.length)));
+                    if (indexOfToken > 0)
+                        indexOfToken--;
+                    var test = new RegExp('(?:^|\\W)' + escapeRegExp(token) + '(?:$|\\W)');
+                    return token.length > 0 && indexOfToken > -1 && (indexOfToken + token.length == name.length || test.test(name.substring(indexOfToken, token.length + 1)));
                 });
                 c = match.length / name.split(' ').length * match.length / tokenArray.length;
                 if (c >= max)
@@ -461,7 +465,6 @@ export function tvdbScrapper(mediaType: MediaType, media: DbTvShow | DbTvMovie):
             if (item)
                 akala.each(item, function (m)
                 {
-
                     var c: number;
 
                     if (m.media_type == 'movie')
