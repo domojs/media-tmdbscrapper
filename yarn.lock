@@ -64,7 +64,7 @@
     ws "^3.3.2"
     xml2js "^0.4.19"
 
-"@domojs/media@^1.1.33":
+"@domojs/media@^1.1.37":
   version "1.1.37"
   resolved "https://registry.yarnpkg.com/@domojs/media/-/media-1.1.37.tgz#14ea15eb3bcc2261e48568714ed312188f826666"
   dependencies:
