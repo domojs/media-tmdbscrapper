@@ -11,15 +11,17 @@
   "author": "npenin",
   "license": "MIT",
   "dependencies": {
-    "@akala/core": "^2.0.29",
     "@akala/server": "^2.0.24",
-    "@domojs/media": "^1.1.37",
     "levenshtein": "^1.0.5"
+  },
+  "peerDependencies": {
+    "@domojs/media": "^1.1.37"
   },
   "description": "",
   "devDependencies": {
     "@types/levenshtein": "^1.0.1",
     "@types/ws": "^4.0.2",
-    "source-map-support": "^0.5.4"
+    "source-map-support": "^0.5.4",
+    "mock-require": "^3.0.2"
   }
 }

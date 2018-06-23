@@ -1,7 +1,7 @@
 import * as akala from '@akala/server';
 import { Client, Connection } from '@akala/json-rpc-ws';
 import { scrapper } from '@domojs/media';
-import { DbTvShow, tvdbScrapper, setLanguage } from './scrapper';
+import { DbTvShow, tmdbScrapper, setLanguage } from './scrapper';
 export * from './scrapper';
 
 akala.injectWithNameAsync(['$isModule', '$config.@domojs/media-tmdbscrapper', '$agent.media'], function (isModule: akala.worker.IsModule, config: any, client: Client<Connection>)
@@ -15,9 +15,9 @@ akala.injectWithNameAsync(['$isModule', '$config.@domojs/media-tmdbscrapper', '$
         var s = akala.api.jsonrpcws(scrapper).createClient(client)({
             scrap: function (media: DbTvShow)
             {
-                return tvdbScrapper(media.type, media).then((newPath) =>
+                return tmdbScrapper(media.type, media).then((newPath) =>
                 {
-                    media['optimizedPath'] = newPath;
+                    media.optimizedPath = newPath;
                     return media;
                 });
             }

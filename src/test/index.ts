@@ -2,6 +2,8 @@ import 'source-map-support/register'
 import debug=require('debug');
 debug.enable('domojs*')
 import * as akala from '@akala/server';
+import * as mock from 'mock-require';
+mock('@akala/server', akala);
 
 akala.register('$isModule', function () { return false });
 
@@ -15,8 +17,9 @@ self.setLanguage('fr');
 //     console.log(media);
 // });
 
-var media: self.DbTvShow = { name: 'Kiss x', type: 'video', episode:2, path:'' } as any;
-self.tvdbScrapper('video', media).then(() =>
+var media: self.DbTvShow = { name: 'Psycho Pass', displayName:'Psycho Pass - E2', type: 'video', episode:2, path:'' } as any;
+self.tmdbScrapper('video', media).then((newPath) =>
 {
+    media.optimizedPath=newPath;
     console.log(media);
 });

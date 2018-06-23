@@ -4,6 +4,7 @@ import { MediaType, TVShow, Movie, confidence } from '@domojs/media';
 import * as url from 'url';
 const APIKEY = 'be3bc153ce74463263960789c93e29a9';
 const log = akala.log('domojs:media:tmdbscrapper');
+const errorlog = akala.log('error:domojs:media:tmdbscrapper');
 
 
 var http: akala.Http = akala.resolve('$http');
@@ -13,6 +14,7 @@ export interface DbTvShow extends TVShow
     tmdbid: number;
     episodeOverview: string;
     still: string;
+    optimizedPath: string;
 }
 
 export interface DbTvMovie extends Movie
@@ -21,6 +23,7 @@ export interface DbTvMovie extends Movie
     displayName: string;
     overview: string;
     still: string;
+    optimizedPath: string;
 }
 
 export function setLanguage(l: string)
@@ -286,7 +289,7 @@ namespace api
 type cache = { media: api.TmdbMovieExtended, seasons: never } | { media: api.TmdbShowExtended | api.TmdbMovieExtended, seasons: api.TmdbSeasonExtended[] };
 var nameCache: { [key: string]: PromiseLike<(api.TmdbMovie | api.TmdbPerson | api.TmdbShow)[]> } = {};
 var idCache: { [key: number]: PromiseLike<cache> } = {};
-export function tvdbScrapper(mediaType: MediaType, media: DbTvShow | DbTvMovie): PromiseLike<string>
+export function tmdbScrapper(mediaType: MediaType, media: DbTvShow | DbTvMovie): PromiseLike<string>
 {
     var handleSerie = function (cacheItem: cache)
     {
@@ -301,7 +304,7 @@ export function tvdbScrapper(mediaType: MediaType, media: DbTvShow | DbTvMovie):
             {
                 var episode = cacheItem.seasons.find(s => s.season_number == tvshow.season).episodes.find(e => e.episode_number == tvshow.episode);
                 if (episode && episode.still_path)
-                    tvshow.still = api.stillBaseUrl + episode.still_path;
+                    media.still = api.stillBaseUrl + episode.still_path;
             }
 
             conf = confidence(media.name, [cacheItem.media.name, cacheItem.media.original_name].concat(akala.map(cacheItem.media.alternative_titles.results, at => at.title)))
@@ -311,22 +314,15 @@ export function tvdbScrapper(mediaType: MediaType, media: DbTvShow | DbTvMovie):
             {
                 media.episodes = cacheItem.seasons.reduce(function (previous, season)
                 {
+                    if (media.season && media.season == season.season_number)
+                        media.absoluteEpisode = previous + media.episode;
                     return previous + season.episodes.length;
                 }, 0);
-                var matchingSeason = akala.grep(cacheItem.seasons, function (e)
-                {
-                    return (!media.season && e.season_number == 1 || media.season == e.season_number);
-                })[0];
-                var matchingEpisode = matchingSeason.episodes.find(function (e)
-                {
-                    return media.episode && e.episode_number == media.episode;
-                });
-                if (matchingEpisode)
-                {
-                    if (conf > 0.5 && media.episode)
-                        newName = newName + ' - ' + matchingEpisode.episode_number;
-                }
+
+                if (conf > 0.5 && media.absoluteEpisode)
+                    newName = media.absoluteEpisode + ' - ' + newName;
             }
+
             if (akala.grep(cacheItem.media.genres, function (genre) { return genre.name == 'Animation' }).length)
                 if (conf > 0.5)
                     return 'Animes/' + cacheItem.media.name + '/' + newName + path.extname(media.path);
@@ -404,10 +400,10 @@ export function tvdbScrapper(mediaType: MediaType, media: DbTvShow | DbTvMovie):
             var splittedName = media.name.split(' ');
             if (splittedName.length > 1)
             {
-                return tvdbScrapper(mediaType, akala.extend({}, media, { name: splittedName[0], originalName: media.name })).then((result) => { return result; },
+                return tmdbScrapper(mediaType, akala.extend({}, media, { name: splittedName[0], originalName: media.name })).then((result) => { return result; },
                     (error) =>
                     {
-                        return tvdbScrapper(mediaType, akala.extend({}, media, { name: splittedName[1], originalName: media.name }));
+                        return tmdbScrapper(mediaType, akala.extend({}, media, { name: splittedName[1], originalName: media.name }));
                     });
             }
             else
@@ -447,7 +443,7 @@ export function tvdbScrapper(mediaType: MediaType, media: DbTvShow | DbTvMovie):
                 return buildPath(matchingSeries);
             else
             {
-                console.log('could no find a matching serie for ' + name);
+                errorlog('could not find a matching serie for ' + name);
                 if (item)
                     log(item);
                 return Promise.resolve(media.path);
