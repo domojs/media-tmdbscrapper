@@ -17,7 +17,7 @@ self.setLanguage('fr');
 //     console.log(media);
 // });
 
-var media: self.DbTvShow = { name: 'Psycho Pass', displayName:'Psycho Pass - E2', type: 'video', episode:2, path:'' } as any;
+var media: self.DbTvShow = { name: 'Majin Tantei Nougami Neuro', displayName:'Majin Tantei Nougami Neuro - E18', type: 'video', episode:18, path:'', subType:'tvshow' } as any;
 self.tmdbScrapper('video', media).then((newPath) =>
 {
     media.optimizedPath=newPath;

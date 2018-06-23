@@ -308,6 +308,9 @@ export function tmdbScrapper(mediaType: MediaType, media: DbTvShow | DbTvMovie):
             }
 
             conf = confidence(media.name, [cacheItem.media.name, cacheItem.media.original_name].concat(akala.map(cacheItem.media.alternative_titles.results, at => at.title)))
+            if (media.subType && media.subType != 'tvshow')
+                conf = conf * 8;
+
             if (conf > 0.5)
                 media.subType = 'tvshow';
             if (cacheItem.seasons && media.subType == 'tvshow')
@@ -333,6 +336,9 @@ export function tmdbScrapper(mediaType: MediaType, media: DbTvShow | DbTvMovie):
         }
         else
         {
+            if (media.subType && media.subType == 'tvshow')
+                conf = conf * 8;
+
             if (conf > 0.5)
             {
                 media.subType = 'movie';
@@ -421,7 +427,9 @@ export function tmdbScrapper(mediaType: MediaType, media: DbTvShow | DbTvMovie):
 
                     if (m.media_type == 'movie')
                     {
-                        if (media.episode)
+                        if (media.subType == 'tvshow')
+                            c = 0;
+                        else if (media.episode)
                             c = confidence(name + ' ' + media.episode, [m.title, m.original_title]);
                         else
                             c = confidence(name, [m.title, m.original_title]);
