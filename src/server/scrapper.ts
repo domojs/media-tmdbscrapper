@@ -302,7 +302,7 @@ export function tvdbScrapper(mediaType: MediaType, media: DbTvShow | DbTvMovie):
             if (tvshow.season)
             {
                 var episode = cacheItem.seasons.find(s => s.season_number == tvshow.season).episodes.find(e => e.episode_number == tvshow.episode);
-                if (episode)
+                if (episode && episode.still_path)
                     tvshow.still = api.stillBaseUrl + episode.still_path;
             }
 

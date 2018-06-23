@@ -1,4 +1,6 @@
 import 'source-map-support/register'
+import debug=require('debug');
+debug.enable('domojs*')
 import * as akala from '@akala/server';
 
 akala.register('$isModule', function () { return false });
@@ -13,7 +15,7 @@ self.setLanguage('fr');
 //     console.log(media);
 // });
 
-var media: self.DbTvShow = { name: 'Insaisissables', type: 'video', episode:2, path:'' } as any;
+var media: self.DbTvShow = { name: 'Kiss x', type: 'video', episode:2, path:'' } as any;
 self.tvdbScrapper('video', media).then(() =>
 {
     console.log(media);
