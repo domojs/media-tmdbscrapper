@@ -288,7 +288,7 @@ namespace api
 
 type cache = { media: api.TmdbMovieExtended, seasons: never } | { media: api.TmdbShowExtended | api.TmdbMovieExtended, seasons: api.TmdbSeasonExtended[] };
 var nameCache: { [key: string]: PromiseLike<(api.TmdbMovie | api.TmdbPerson | api.TmdbShow)[]> } = {};
-var idCache: { [key: number]: PromiseLike<cache> } = {};
+var idCache: { [key: string]: PromiseLike<cache> } = {};
 export function tmdbScrapper(mediaType: MediaType, media: DbTvShow | DbTvMovie): PromiseLike<string>
 {
     var handleSerie = function (cacheItem: cache)
@@ -355,9 +355,9 @@ export function tmdbScrapper(mediaType: MediaType, media: DbTvShow | DbTvMovie):
             media.subType = 'movie';
         else
             media.subType = 'tvshow';
-        if (!idCache[media.tmdbid])
+        if (!idCache[media.subType+media.tmdbid])
             if (media.subType == 'tvshow')
-                idCache[media.tmdbid] = api.getSerie(media.tmdbid).then((serie) =>
+                idCache[media.subType+media.tmdbid] = api.getSerie(media.tmdbid).then((serie) =>
                 {
                     if (serie.overview && media.episode == 1 && media.season == 1)
                         item.overview = serie.overview;
@@ -381,14 +381,14 @@ export function tmdbScrapper(mediaType: MediaType, media: DbTvShow | DbTvMovie):
                     }) as PromiseLike<cache>
                 });
             else if (media.subType == 'movie')
-                idCache[media.tmdbid] = api.getMovie(media.tmdbid).then((serie) =>
+                idCache[media.subType+media.tmdbid] = api.getMovie(media.tmdbid).then((serie) =>
                 {
                     return {
                         media: serie,
                         seasons: null
                     };
                 });
-        return idCache[media.tmdbid].then((serie) => handleSerie(serie));
+        return idCache[media.subType+media.tmdbid].then((serie) => handleSerie(serie));
     };
 
     function handleResults(item: api.TmdbMedia[])
@@ -454,7 +454,7 @@ export function tmdbScrapper(mediaType: MediaType, media: DbTvShow | DbTvMovie):
                 errorlog('could not find a matching serie for ' + name);
                 if (item)
                     log(item);
-                return Promise.resolve(media.path);
+                return Promise.resolve(null);
             }
         }
     }

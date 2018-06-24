@@ -17,7 +17,8 @@ akala.injectWithNameAsync(['$isModule', '$config.@domojs/media-tmdbscrapper', '$
             {
                 return tmdbScrapper(media.type, media).then((newPath) =>
                 {
-                    media.optimizedPath = newPath;
+                    if (newPath)
+                        media.optimizedPath = newPath;
                     return media;
                 });
             }
