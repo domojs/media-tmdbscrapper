@@ -12,7 +12,7 @@ akala.injectWithNameAsync(['$isModule', '$config.@domojs/media-tmdbscrapper', '$
             if (config && config.language)
                 setLanguage(config.language);
 
-        var s = akala.api.jsonrpcws(scrapper).createClient(client)({
+        var s = akala.api.jsonrpcws(scrapper).createClient(client, {
             scrap: function (media: DbTvShow)
             {
                 return tmdbScrapper(media.type, media).then((newPath) =>
