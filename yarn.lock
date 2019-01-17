@@ -522,8 +522,8 @@ mkdirp@^0.5.1:
     minimist "0.0.8"
 
 mock-require@^3.0.2:
-  version "3.0.2"
-  resolved "https://registry.yarnpkg.com/mock-require/-/mock-require-3.0.2.tgz#7ce759b559e3b194be5f20a5b1cece0eb363f53d"
+  version "3.0.3"
+  resolved "https://registry.yarnpkg.com/mock-require/-/mock-require-3.0.3.tgz#ccd544d9eae81dd576b3f219f69ec867318a1946"
   dependencies:
     get-caller-file "^1.0.2"
     normalize-path "^2.1.1"
